@@ -117,7 +117,10 @@ async function run() {
     // ========================================   package collection end    ========================================
 
     // ========================================   tour type collection start    ========================================
-    
+    app.get("/tourTypes", async (req, res) => {
+      const result = await tourTypeCollection.find().toArray();
+      res.send(result);
+    });
     app.post("/tourTypes", async (req, res) => {
       const tourTypesInfo = req.body;
       const result = await tourTypeCollection.insertOne(tourTypesInfo);

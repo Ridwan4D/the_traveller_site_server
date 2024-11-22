@@ -32,6 +32,9 @@ async function run() {
     const packageCollection = client
       .db("theTravellerSite")
       .collection("packages");
+    const tourTypeCollection = client
+      .db("theTravellerSite")
+      .collection("tourTypes");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -112,6 +115,15 @@ async function run() {
       res.send(result);
     });
     // ========================================   package collection end    ========================================
+
+    // ========================================   tour type collection start    ========================================
+    
+    app.post("/tourTypes", async (req, res) => {
+      const tourTypesInfo = req.body;
+      const result = await tourTypeCollection.insertOne(tourTypesInfo);
+      res.send(result);
+    });
+    // ========================================   tour type collection end    ========================================
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

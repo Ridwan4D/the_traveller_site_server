@@ -6,7 +6,11 @@ const app = express();
 const port = process.env.PORT || 7000;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+  })
+);
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = `mongodb+srv://${process.env.MONGODB_USER_ID}:${process.env.MONGODB_USER_PASS}@cluster0.yyjvuyt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -58,6 +62,17 @@ async function run() {
     app.get("/users", async (req, res) => {
       const result = await userCollection.find().toArray();
       res.send(result);
+    });
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const user = await userCollection.findOne(query);
+      let admin = false;
+      if (user) {
+        admin = user?.role === "admin";
+      }
+      console.log({admin});
+      res.send({ admin });
     });
     app.post("/users", async (req, res) => {
       const user = req.body;

@@ -29,6 +29,9 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const userCollection = client.db("theTravellerSite").collection("users");
+    const packageCollection = client
+      .db("theTravellerSite")
+      .collection("packages");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -71,8 +74,19 @@ async function run() {
       if (user) {
         admin = user?.role === "admin";
       }
-      console.log({admin});
+      console.log({ admin });
       res.send({ admin });
+    });
+    app.get("/users/guide/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const user = await userCollection.findOne(query);
+      let guide = false;
+      if (user) {
+        guide = user?.role === "guide";
+      }
+      console.log({ guide });
+      res.send({ guide });
     });
     app.post("/users", async (req, res) => {
       const user = req.body;
@@ -86,6 +100,18 @@ async function run() {
     });
 
     // ========================================   user collection end    ========================================
+
+    // ========================================   package collection start    ========================================
+    app.get("/packages", async (req, res) => {
+      const result = await packageCollection.find().toArray();
+      res.send(result);
+    });
+    app.post("/packages", async (req, res) => {
+      const packageInfo = req.body;
+      const result = await packageCollection.insertOne(packageInfo);
+      res.send(result);
+    });
+    // ========================================   package collection end    ========================================
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

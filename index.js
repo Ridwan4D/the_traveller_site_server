@@ -102,6 +102,19 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const userInfo = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: userInfo.role,
+          requested: userInfo.requested,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
     // ========================================   user collection end    ========================================
 
     // ========================================   package collection start    ========================================

@@ -115,6 +115,13 @@ async function run() {
       const result = await userCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
+    });
     // ========================================   user collection end    ========================================
 
     // ========================================   package collection start    ========================================

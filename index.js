@@ -201,6 +201,12 @@ async function run() {
       const result = await sliderCollection.find().toArray();
       res.send(result);
     });
+
+    app.post("/sliders", async (req, res) => {
+      const bannerInfo = req.body;
+      const result = await sliderCollection.insertOne(bannerInfo);
+      res.send(result);
+    });
     // ========================================   slider type collection end    ========================================
 
     // Send a ping to confirm a successful connection

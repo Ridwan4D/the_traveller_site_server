@@ -35,6 +35,7 @@ async function run() {
     const tourTypeCollection = client
       .db("theTravellerSite")
       .collection("tourTypes");
+    const sliderCollection = client.db("ElectroMart").collection("sliders");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -194,6 +195,13 @@ async function run() {
       res.send(result);
     });
     // ========================================   tour type collection end    ========================================
+
+    // ========================================   slider type collection start    ========================================
+    app.get("/sliders", async (req, res) => {
+      const result = await sliderCollection.find().toArray();
+      res.send(result);
+    });
+    // ========================================   slider type collection end    ========================================
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

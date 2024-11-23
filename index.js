@@ -116,6 +116,27 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const userInfo = req.body;
+      const filter = { userEmail: email };
+      const options = { upsert: true };
+      // console.log(userInfo.userName);
+      const updateDoc = {
+        $set: {
+          userName: userInfo.userName,
+          phone: userInfo.phone,
+          education: userInfo.education,
+          experience: userInfo.experience,
+          languages: userInfo.languages,
+          address: userInfo.address,
+          userImage: userInfo.image,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
     app.delete("/users/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };

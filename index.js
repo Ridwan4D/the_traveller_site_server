@@ -12,7 +12,7 @@ app.use(
   })
 );
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.MONGODB_USER_ID}:${process.env.MONGODB_USER_PASS}@cluster0.yyjvuyt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -77,7 +77,7 @@ async function run() {
       if (user) {
         admin = user?.role === "admin";
       }
-      console.log({ admin });
+      // console.log({ admin });
       res.send({ admin });
     });
     app.get("/users/guide/:email", async (req, res) => {
@@ -88,7 +88,7 @@ async function run() {
       if (user) {
         guide = user?.role === "guide";
       }
-      console.log({ guide });
+      // console.log({ guide });
       res.send({ guide });
     });
     app.post("/users", async (req, res) => {
@@ -112,6 +112,25 @@ async function run() {
     app.post("/packages", async (req, res) => {
       const packageInfo = req.body;
       const result = await packageCollection.insertOne(packageInfo);
+      res.send(result);
+    });
+    app.put("/packages/:id", async (req, res) => {
+      const id = req.params.id;
+      const packageInfo = req.body;
+      console.log(id, packageInfo);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          tour_name: packageInfo.tour_name,
+          trip_type: packageInfo.trip_type,
+          price: packageInfo.price,
+          duration: packageInfo.duration,
+          tour_plan: packageInfo.tour_plan,
+          description: packageInfo.description,
+          images: packageInfo.images,
+        },
+      };
+      const result = await packageCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
     // ========================================   package collection end    ========================================

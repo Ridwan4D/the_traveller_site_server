@@ -228,6 +228,11 @@ async function run() {
     // ========================================   slider type collection end    ========================================
 
     // ========================================   guide review type collection start    ========================================
+    app.get("/guideReviews", async (req, res) => {
+      const result = await guideReviewCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/guideReviews", async (req, res) => {
       const reviewInfo = req.body;
       const result = await guideReviewCollection.insertOne(reviewInfo);

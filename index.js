@@ -35,9 +35,11 @@ async function run() {
     const tourTypeCollection = client
       .db("theTravellerSite")
       .collection("tourTypes");
-    const sliderCollection = client.db("ElectroMart").collection("sliders");
+    const sliderCollection = client
+      .db("theTravellerSite")
+      .collection("sliders");
     const guideReviewCollection = client
-      .db("ElectroMart")
+      .db("theTravellerSite")
       .collection("guideReviews");
 
     // ========================================   jwt api start    ========================================
@@ -143,6 +145,22 @@ async function run() {
           languages: userInfo.languages,
           address: userInfo.address,
           userImage: userInfo.image,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
+    app.patch("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const requestInfo = req.body;
+      const filter = { userEmail: email };
+      const options = { upsert: true };
+      console.log(requestInfo.requesterRole);
+      const updateDoc = {
+        $set: {
+          requested: requestInfo.requested,
+          requestedRole: requestInfo.requestedRole,
         },
       };
       const result = await userCollection.updateOne(filter, updateDoc, options);

@@ -281,6 +281,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/bookings/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { guideEmail: email }
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result)
+    })
+    
     app.post("/bookings", async (req, res) => {
       const bookingInfo = req.body;
       const result = await bookingCollection.insertOne(bookingInfo);

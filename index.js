@@ -92,6 +92,14 @@ async function run() {
       // console.log({ guide });
       res.send({ guide });
     });
+
+    app.get("/guides", async (req, res) => {
+      const role = req.query.role;
+      const query = { role: role };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { userEmail: user.userEmail };

@@ -280,10 +280,17 @@ async function run() {
       const result = await bookingCollection.find(query).toArray();
       res.send(result);
     });
-    
+
     app.post("/bookings", async (req, res) => {
       const bookingInfo = req.body;
       const result = await bookingCollection.insertOne(bookingInfo);
+      res.send(result);
+    });
+
+    app.delete("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookingCollection.deleteOne(query);
       res.send(result);
     });
     // ========================================   booking type collection end    ========================================

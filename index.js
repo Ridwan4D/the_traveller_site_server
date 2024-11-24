@@ -249,12 +249,18 @@ async function run() {
     // ========================================   slider type collection end    ========================================
 
     // ========================================   wishlist type collection start    ========================================
+    app.get("/wishlists", async (req, res) => {
+      const email = req.query.email;
+      const query = { adderMail: email };
+      const result = await wishlistCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/wishlists", async (req, res) => {
       const wishInfo = req.body;
       const result = await wishlistCollection.insertOne(wishInfo);
       res.send(result);
     });
-
     // ========================================   wishlist type collection end    ========================================
 
     // ========================================   guide review type collection start    ========================================

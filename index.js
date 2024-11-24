@@ -44,6 +44,9 @@ async function run() {
     const wishlistCollection = client
       .db("theTravellerSite")
       .collection("wishlists");
+    const bookingCollection = client
+      .db("theTravellerSite")
+      .collection("bookings");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -269,6 +272,14 @@ async function run() {
       res.send(result);
     });
     // ========================================   wishlist type collection end    ========================================
+
+    // ========================================   booking type collection start    ========================================
+    app.post("/bookings", async (req, res) => {
+      const bookingInfo = req.body;
+      const result = await bookingCollection.insertOne(bookingInfo);
+      res.send(result);
+    });
+    // ========================================   booking type collection end    ========================================
 
     // ========================================   guide review type collection start    ========================================
     app.get("/guideReviews", async (req, res) => {

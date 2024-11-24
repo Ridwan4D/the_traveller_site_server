@@ -330,6 +330,10 @@ async function run() {
     // ========================================   guide review type collection end    ========================================
 
     // ========================================   story type collection start    ========================================
+    app.get("/stories", async (req, res) => {
+      const result = await storyCollection.find().toArray();
+      res.send(result);
+    });
     app.post("/stories", async (req, res) => {
       const storyInfo = req.body;
       const result = await storyCollection.insertOne(storyInfo);

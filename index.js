@@ -261,6 +261,13 @@ async function run() {
       const result = await wishlistCollection.insertOne(wishInfo);
       res.send(result);
     });
+
+    app.delete("/wishlists/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await wishlistCollection.deleteOne(query);
+      res.send(result);
+    });
     // ========================================   wishlist type collection end    ========================================
 
     // ========================================   guide review type collection start    ========================================

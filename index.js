@@ -36,6 +36,9 @@ async function run() {
       .db("theTravellerSite")
       .collection("tourTypes");
     const sliderCollection = client.db("ElectroMart").collection("sliders");
+    const guideReviewCollection = client
+      .db("ElectroMart")
+      .collection("guideReviews");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -223,6 +226,14 @@ async function run() {
       res.send(result);
     });
     // ========================================   slider type collection end    ========================================
+
+    // ========================================   guide review type collection start    ========================================
+    app.post("/guideReviews", async (req, res) => {
+      const reviewInfo = req.body;
+      const result = await guideReviewCollection.insertOne(reviewInfo);
+      res.send(result);
+    });
+    // ========================================   guide review type collection end    ========================================
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

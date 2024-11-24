@@ -230,6 +230,12 @@ async function run() {
       const result = await tourTypeCollection.insertOne(tourTypesInfo);
       res.send(result);
     });
+    app.delete("/tourTypes/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await tourTypeCollection.deleteOne(query);
+      res.send(result);
+    });
     // ========================================   tour type collection end    ========================================
 
     // ========================================   slider type collection start    ========================================

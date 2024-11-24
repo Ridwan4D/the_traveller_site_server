@@ -274,6 +274,13 @@ async function run() {
     // ========================================   wishlist type collection end    ========================================
 
     // ========================================   booking type collection start    ========================================
+    app.get("/bookings", async (req, res) => {
+      const email = req.query.email;
+      const query = { userEmail: email };
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    });
+    
     app.post("/bookings", async (req, res) => {
       const bookingInfo = req.body;
       const result = await bookingCollection.insertOne(bookingInfo);

@@ -47,6 +47,7 @@ async function run() {
     const bookingCollection = client
       .db("theTravellerSite")
       .collection("bookings");
+    const storyCollection = client.db("theTravellerSite").collection("stories");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -281,16 +282,29 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/bookings/:email", verifyToken, async (req, res) => {
+    app.get("/bookings/:email", async (req, res) => {
       const email = req.params.email;
-      const query = { guideEmail: email }
+      const query = { guideEmail: email };
       const result = await bookingCollection.find(query).toArray();
-      res.send(result)
-    })
-    
+      res.send(result);
+    });
+
     app.post("/bookings", async (req, res) => {
       const bookingInfo = req.body;
       const result = await bookingCollection.insertOne(bookingInfo);
+      res.send(result);
+    });
+    app.patch("/guideBookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const bookingInfo = req.body;
+      console.log(id, bookingInfo);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: bookingInfo?.status,
+        },
+      };
+      const result = await bookingCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
 
@@ -314,6 +328,14 @@ async function run() {
       res.send(result);
     });
     // ========================================   guide review type collection end    ========================================
+
+    // ========================================   story type collection start    ========================================
+    app.post("/stories", async (req, res) => {
+      const storyInfo = req.body;
+      const result = await storyCollection.insertOne(storyInfo);
+      res.send(result);
+    });
+    // ========================================   story type collection end    ========================================
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

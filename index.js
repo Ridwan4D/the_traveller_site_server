@@ -79,7 +79,13 @@ async function run() {
 
     // ========================================   user collection start    ========================================
     app.get("/users", async (req, res) => {
-      const result = await userCollection.find().toArray();
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+      const result = await userCollection
+        .find()
+        .skip(page * size)
+        .limit(size)
+        .toArray();
       res.send(result);
     });
     app.get("/usersCount", async (req, res) => {
@@ -188,7 +194,13 @@ async function run() {
 
     // ========================================   package collection start    ========================================
     app.get("/packages", async (req, res) => {
-      const result = await packageCollection.find().toArray();
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+      const result = await packageCollection
+        .find()
+        .skip(page * size)
+        .limit(size)
+        .toArray();
       res.send(result);
     });
     app.post("/packages", async (req, res) => {

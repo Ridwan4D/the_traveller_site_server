@@ -82,6 +82,10 @@ async function run() {
       const result = await userCollection.find().toArray();
       res.send(result);
     });
+    app.get("/usersCount", async (req, res) => {
+      const count = await userCollection.estimatedDocumentCount();
+      res.send({ count });
+    });
     app.get("/users/admin/:email", async (req, res) => {
       const email = req.params.email;
       const query = { userEmail: email };

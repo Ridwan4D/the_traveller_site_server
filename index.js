@@ -3,12 +3,17 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
+const stripe = require("stripe")(process.env.STRIP_SECRET_KEY);
 const port = process.env.PORT || 7000;
-
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://traveller-site.web.app",
+      "https://traveller-site.firebaseapp.com",
+    ],
   })
 );
 
@@ -27,7 +32,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const userCollection = client.db("theTravellerSite").collection("users");
     const packageCollection = client
       .db("theTravellerSite")
@@ -48,6 +53,9 @@ async function run() {
       .db("theTravellerSite")
       .collection("bookings");
     const storyCollection = client.db("theTravellerSite").collection("stories");
+    const paymentCollection = client
+      .db("theTravellerSite")
+      .collection("payments");
 
     // ========================================   jwt api start    ========================================
     app.post("/jwt", async (req, res) => {
@@ -338,6 +346,33 @@ async function run() {
     });
     // ========================================   booking type collection end    ========================================
 
+    // ========================================   payment collection start    ========================================
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100);
+      console.log(amount);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+    // ========================================   payment collection end    ========================================
+
+    // ========================================   payment history collection start    ========================================
+    app.post("/payments", async (req, res) => {
+      const payment = req.body;
+      const paymentResult = await paymentCollection.insertOne(payment);
+      const query = { _id: new ObjectId(payment.bookingId) };
+      const deleteResult = await bookingCollection.deleteOne(query);
+      res.send({ paymentResult, deleteResult });
+    });
+
+    // ========================================   payment history collection end    ========================================
+
     // ========================================   guide review type collection start    ========================================
     app.get("/guideReviews", async (req, res) => {
       const result = await guideReviewCollection.find().toArray();
@@ -370,7 +405,7 @@ async function run() {
     // ========================================   story type collection end    ========================================
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );

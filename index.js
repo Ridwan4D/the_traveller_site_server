@@ -340,6 +340,12 @@ async function run() {
       const result = await storyCollection.find().toArray();
       res.send(result);
     });
+    app.get("/stories", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await storyCollection.find(query).toArray();
+      res.send(result);
+    });
     app.post("/stories", async (req, res) => {
       const storyInfo = req.body;
       const result = await storyCollection.insertOne(storyInfo);
